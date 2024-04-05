@@ -3,10 +3,11 @@
 
 #дополни эту программу так чтобы шарик мог разрушать кирпичи
 
-#
+#добавь в код ниже меню при входе, которое позволит выбрать размер мяча, платвормы и скорость
 
 import pygame
 import random
+import sys
 
 # Инициализация Pygame
 pygame.init()
@@ -21,10 +22,78 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
+black = (0, 0, 0)
 
 # ФПС и таймер
 clock = pygame.time.Clock()
 fps = 60
+
+
+# Функция для отображения текста
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+
+
+# Меню настроек
+def game_menu():
+    ball_size = 30
+    paddle_width = 100
+    movement_speed = 6
+
+    while True:
+        screen.fill(white)
+        draw_text('Welcome to Breakout!', pygame.font.Font(None, 36), black, screen, 200, 20)
+
+        mx, my = pygame.mouse.get_pos()
+
+        button_1 = pygame.Rect(250, 100, 200, 50)
+        button_2 = pygame.Rect(250, 200, 200, 50)
+        button_3 = pygame.Rect(250, 300, 200, 50)
+
+        if button_1.collidepoint((mx, my)):
+            if click:
+                ball_size = 20
+                paddle_width = 80
+                movement_speed = 8
+        if button_2.collidepoint((mx, my)):
+            if click:
+                ball_size = 30
+                paddle_width = 100
+                movement_speed = 6
+        if button_3.collidepoint((mx, my)):
+            if click:
+                ball_size = 40
+                paddle_width = 120
+                movement_speed = 4
+
+        pygame.draw.rect(screen, blue, button_1)
+        pygame.draw.rect(screen, green, button_2)
+        pygame.draw.rect(screen, red, button_3)
+
+        draw_text('Easy', pygame.font.Font(None, 30), white, screen, 320, 110)
+        draw_text('Medium', pygame.font.Font(None, 30), white, screen, 310, 210)
+        draw_text('Hard', pygame.font.Font(None, 30), white, screen, 320, 310)
+
+        click = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(fps)
+
+        if click:
+            return ball_size, paddle_width, movement_speed
+
+# Получаем настройки из меню
+ball_size, paddle_width, movement_speed = game_menu()
 
 # Определение классов
 class Brick:
@@ -36,7 +105,7 @@ class Brick:
 
 class Paddle:
     def __init__(self, x, y):
-        self.rect = pygame.Rect(x, y, 100, 20)
+        self.rect = pygame.Rect(x, y, paddle_width, 20)
 
     def draw(self):
         pygame.draw.rect(screen, blue, self.rect)
@@ -51,7 +120,7 @@ class Paddle:
 
 class Ball:
     def __init__(self, x, y):
-        self.rect = pygame.Rect(x, y, 30, 30)
+        self.rect = pygame.Rect(x, y, ball_size, ball_size)
         self.dx = random.choice([-4, 4])
         self.dy = random.choice([-4, 4])
 
