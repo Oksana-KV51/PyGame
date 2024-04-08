@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.surf = pygame.Surface((25, 25))
         self.surf.fill(WHITE)
         self.rect = self.surf.get_rect(center=(SCREEN_WIDTH /2, SCREEN_HEIGHT /2))
-        self.speed = 5
+        self.speed = 2
 
     def update(self):
         keys = pygame.key.get_pressed()
